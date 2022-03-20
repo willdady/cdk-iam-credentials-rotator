@@ -1,8 +1,9 @@
 {
   "name": "cdk-iam-credentials-rotator",
+  "description": "AWS CDK construct for rotating IAM user credentials",
   "repository": {
     "type": "git",
-    "url": "https://github.com/willdady/iam-credentials-rotator.git"
+    "url": "https://github.com/willdady/cdk-iam-credentials-rotator.git"
   },
   "scripts": {
     "build": "npx projen build",
@@ -76,7 +77,10 @@
     "constructs": "^10.0.5"
   },
   "keywords": [
-    "cdk"
+    "cdk",
+    "credentials",
+    "iam",
+    "serverless"
   ],
   "main": "lib/index.js",
   "license": "Apache-2.0",
