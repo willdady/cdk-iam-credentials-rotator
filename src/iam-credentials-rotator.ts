@@ -64,7 +64,9 @@ export class IamCredentialsRotator extends Construct {
     props.credentialsHandler.addToRolePolicy(
       new iam.PolicyStatement({
         actions: ['secretsmanager:GetSecretValue'],
-        resources: ['arn:*:secretsmanager:*:*:secret:iam-credential-rotation/*'],
+        resources: [
+          'arn:*:secretsmanager:*:*:secret:iam-credential-rotation/*',
+        ],
       }),
     );
 
@@ -88,7 +90,9 @@ export class IamCredentialsRotator extends Construct {
     cleanupLambda.addToRolePolicy(
       new iam.PolicyStatement({
         actions: ['secretsmanager:DeleteSecret'],
-        resources: ['arn:*:secretsmanager:*:*:secret:iam-credential-rotation/*'],
+        resources: [
+          'arn:*:secretsmanager:*:*:secret:iam-credential-rotation/*',
+        ],
       }),
     );
 
@@ -130,7 +134,7 @@ export class IamCredentialsRotator extends Construct {
         },
       },
     );
-    eventHandlerFunction.grantInvoke(eventHandlerFunction);
+    stateMachine.grantStartExecution(eventHandlerFunction);
     usernamesParameter.grantRead(eventHandlerFunction);
 
     new events.Rule(this, 'ScheduleRule', {
