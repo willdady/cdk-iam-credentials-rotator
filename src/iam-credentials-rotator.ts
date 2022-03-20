@@ -13,9 +13,18 @@ import { CredentialsRotatorFunction } from './credentials-rotator-function';
 import { EventHandlerFunction } from './event-handler-function';
 
 export interface IIamCredentialsRotatorProps {
+  /**
+   * Lambda function which is invoked after new credentials are created for a user
+   */
   readonly credentialsHandler: IFunction;
+  /**
+   * List of IAM usernames in target account
+   */
   readonly usernames: string[];
-  readonly schedule?: Duration;
+  /**
+   * Frequency of key rotation. Default once an hour.
+   */
+  readonly scheduleDuration?: Duration;
 }
 
 export class IamCredentialsRotator extends Construct {
@@ -129,7 +138,9 @@ export class IamCredentialsRotator extends Construct {
     usernamesParameter.grantRead(eventHandlerFunction);
 
     new events.Rule(this, 'ScheduleRule', {
-      schedule: events.Schedule.rate(props.schedule || Duration.hours(1)),
+      schedule: events.Schedule.rate(
+        props.scheduleDuration || Duration.hours(1),
+      ),
       targets: [
         new eventsTargets.LambdaFunction(eventHandlerFunction, {
           retryAttempts: 2,
