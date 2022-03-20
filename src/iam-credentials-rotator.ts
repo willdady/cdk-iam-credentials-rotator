@@ -43,10 +43,10 @@ export class IamCredentialsRotator extends Construct {
     credentialsRotatorLambda.addToRolePolicy(
       new iam.PolicyStatement({
         actions: [
-          'iam::ListAccessKeys',
-          'iam::CreateAccessKey',
-          'iam::DeleteAccessKey',
-          'secretsmanager::CreateSecret',
+          'iam:ListAccessKeys',
+          'iam:CreateAccessKey',
+          'iam:DeleteAccessKey',
+          'secretsmanager:CreateSecret',
         ],
         resources: ['*'],
       }),
@@ -63,10 +63,8 @@ export class IamCredentialsRotator extends Construct {
     // Step 2
     props.credentialsHandler.addToRolePolicy(
       new iam.PolicyStatement({
-        actions: ['secretsmanager::GetSecretValue'],
-        resources: [
-          'arn:*:secretsmanager:*:*:secret:iam-credential-rotation/*',
-        ],
+        actions: ['secretsmanager:GetSecretValue'],
+        resources: ['arn:*:secretsmanager:*:*:secret:iam-credential-rotation/*'],
       }),
     );
 
@@ -83,16 +81,14 @@ export class IamCredentialsRotator extends Construct {
     const cleanupLambda = new CleanupFunction(this, 'CleanupLambda');
     cleanupLambda.addToRolePolicy(
       new iam.PolicyStatement({
-        actions: ['iam::ListAccessKeys', 'iam::DeleteAccessKey'],
+        actions: ['iam:ListAccessKeys', 'iam:DeleteAccessKey'],
         resources: ['*'],
       }),
     );
     cleanupLambda.addToRolePolicy(
       new iam.PolicyStatement({
-        actions: ['secretsmanager::DeleteSecret'],
-        resources: [
-          'arn:*:secretsmanager:*:*:secret:iam-credential-rotation/*',
-        ],
+        actions: ['secretsmanager:DeleteSecret'],
+        resources: ['arn:*:secretsmanager:*:*:secret:iam-credential-rotation/*'],
       }),
     );
 
