@@ -2,8 +2,8 @@
 !/.gitattributes
 !/.projen/tasks.json
 !/.projen/deps.json
+!/.projen/files.json
 !/.github/workflows/pull-request-lint.yml
-!/.github/workflows/stale.yml
 !/package.json
 !/LICENSE
 !/.npmignore
@@ -49,4 +49,8 @@ junit.xml
 .jsii
 tsconfig.json
 !/API.md
+/assets/
+!/src/cleanup-function.ts
+!/src/credentials-rotator-function.ts
+!/src/event-handler-function.ts
 !/.github/workflows/upgrade-main.yml

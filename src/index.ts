@@ -3,3 +3,5 @@ export class Hello {
     return 'hello, world!';
   }
 }
+
+export * from './iam-credentials-rotator';

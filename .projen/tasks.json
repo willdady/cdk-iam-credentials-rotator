@@ -31,7 +31,8 @@
         "OUTFILE": "package.json",
         "CHANGELOG": "dist/changelog.md",
         "BUMPFILE": "dist/version.txt",
-        "RELEASETAG": "dist/releasetag.txt"
+        "RELEASETAG": "dist/releasetag.txt",
+        "RELEASE_TAG_PREFIX": ""
       },
       "steps": [
         {
@@ -39,6 +40,75 @@
         }
       ],
       "condition": "! git log --oneline -1 | grep -q \"chore(release):\""
+    },
+    "bundle": {
+      "name": "bundle",
+      "description": "Prepare assets",
+      "steps": [
+        {
+          "spawn": "bundle:cleanup.lambda"
+        },
+        {
+          "spawn": "bundle:credentials-rotator.lambda"
+        },
+        {
+          "spawn": "bundle:event-handler.lambda"
+        }
+      ]
+    },
+    "bundle:cleanup.lambda": {
+      "name": "bundle:cleanup.lambda",
+      "description": "Create a JavaScript bundle from src/cleanup.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/cleanup.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/cleanup.lambda/index.js\" --external:aws-sdk"
+        }
+      ]
+    },
+    "bundle:cleanup.lambda:watch": {
+      "name": "bundle:cleanup.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/cleanup.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/cleanup.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/cleanup.lambda/index.js\" --external:aws-sdk --watch"
+        }
+      ]
+    },
+    "bundle:credentials-rotator.lambda": {
+      "name": "bundle:credentials-rotator.lambda",
+      "description": "Create a JavaScript bundle from src/credentials-rotator.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/credentials-rotator.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/credentials-rotator.lambda/index.js\" --external:aws-sdk"
+        }
+      ]
+    },
+    "bundle:credentials-rotator.lambda:watch": {
+      "name": "bundle:credentials-rotator.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/credentials-rotator.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/credentials-rotator.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/credentials-rotator.lambda/index.js\" --external:aws-sdk --watch"
+        }
+      ]
+    },
+    "bundle:event-handler.lambda": {
+      "name": "bundle:event-handler.lambda",
+      "description": "Create a JavaScript bundle from src/event-handler.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/event-handler.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/event-handler.lambda/index.js\" --external:aws-sdk"
+        }
+      ]
+    },
+    "bundle:event-handler.lambda:watch": {
+      "name": "bundle:event-handler.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/event-handler.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/event-handler.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/event-handler.lambda/index.js\" --external:aws-sdk --watch"
+        }
+      ]
     },
     "clobber": {
       "name": "clobber",
@@ -104,7 +174,19 @@
       "description": "Generate API.md from .jsii manifest",
       "steps": [
         {
-          "exec": "jsii-docgen"
+          "exec": "jsii-docgen -o API.md"
+        }
+      ]
+    },
+    "eject": {
+      "name": "eject",
+      "description": "Remove projen from the project",
+      "env": {
+        "PROJEN_EJECTING": "true"
+      },
+      "steps": [
+        {
+          "spawn": "default"
         }
       ]
     },
@@ -122,7 +204,25 @@
       "description": "Creates the distribution package",
       "steps": [
         {
-          "exec": "jsii-pacmak"
+          "exec": "if [ ! -z ${CI} ]; then mkdir -p dist && rsync -a . dist --exclude .git --exclude node_modules; else npx projen package-all; fi"
+        }
+      ]
+    },
+    "package-all": {
+      "name": "package-all",
+      "description": "Packages artifacts for all target languages",
+      "steps": [
+        {
+          "spawn": "package:js"
+        }
+      ]
+    },
+    "package:js": {
+      "name": "package:js",
+      "description": "Create js language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target js"
         }
       ]
     },
@@ -135,37 +235,16 @@
         }
       ]
     },
+    "post-upgrade": {
+      "name": "post-upgrade",
+      "description": "Runs after upgrading dependencies"
+    },
     "pre-compile": {
       "name": "pre-compile",
-      "description": "Prepare the project for compilation"
-    },
-    "publish:github": {
-      "name": "publish:github",
-      "description": "Publish this package to GitHub Releases",
-      "requiredEnv": [
-        "GITHUB_TOKEN",
-        "GITHUB_REPOSITORY",
-        "GITHUB_REF"
-      ],
+      "description": "Prepare the project for compilation",
       "steps": [
         {
-          "exec": "errout=$(mktemp); gh release create $(cat dist/releasetag.txt) -R $GITHUB_REPOSITORY -F dist/changelog.md -t $(cat dist/releasetag.txt) --target $GITHUB_REF 2> $errout && true; exitcode=$?; if [ $exitcode -ne 0 ] && ! grep -q \"Release.tag_name already exists\" $errout; then cat $errout; exit $exitcode; fi"
-        }
-      ]
-    },
-    "publish:npm": {
-      "name": "publish:npm",
-      "description": "Publish this package to npm",
-      "env": {
-        "NPM_DIST_TAG": "latest",
-        "NPM_REGISTRY": "registry.npmjs.org"
-      },
-      "requiredEnv": [
-        "NPM_TOKEN"
-      ],
-      "steps": [
-        {
-          "exec": "npx -p jsii-release@latest jsii-release-npm"
+          "spawn": "bundle"
         }
       ]
     },
@@ -230,7 +309,8 @@
         "OUTFILE": "package.json",
         "CHANGELOG": "dist/changelog.md",
         "BUMPFILE": "dist/version.txt",
-        "RELEASETAG": "dist/releasetag.txt"
+        "RELEASETAG": "dist/releasetag.txt",
+        "RELEASE_TAG_PREFIX": ""
       },
       "steps": [
         {
@@ -246,28 +326,31 @@
       },
       "steps": [
         {
-          "exec": "npm-check-updates --dep dev --upgrade --target=minor --reject='projen'"
+          "exec": "npm-check-updates --dep dev --upgrade --target=minor --reject='aws-cdk-lib,constructs,projen'"
         },
         {
-          "exec": "npm-check-updates --dep optional --upgrade --target=minor --reject='projen'"
+          "exec": "npm-check-updates --dep optional --upgrade --target=minor --reject='aws-cdk-lib,constructs,projen'"
         },
         {
-          "exec": "npm-check-updates --dep peer --upgrade --target=minor --reject='projen'"
+          "exec": "npm-check-updates --dep peer --upgrade --target=minor --reject='aws-cdk-lib,constructs,projen'"
         },
         {
-          "exec": "npm-check-updates --dep prod --upgrade --target=minor --reject='projen'"
+          "exec": "npm-check-updates --dep prod --upgrade --target=minor --reject='aws-cdk-lib,constructs,projen'"
         },
         {
-          "exec": "npm-check-updates --dep bundle --upgrade --target=minor --reject='projen'"
+          "exec": "npm-check-updates --dep bundle --upgrade --target=minor --reject='aws-cdk-lib,constructs,projen'"
         },
         {
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade @aws-cdk/assert @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-import eslint jest jest-junit jsii jsii-diff jsii-docgen jsii-pacmak json-schema npm-check-updates standard-version ts-jest typescript constructs"
+          "exec": "yarn upgrade @aws-sdk/client-iam @aws-sdk/client-secrets-manager @aws-sdk/client-sfn @aws-sdk/client-ssm @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-cdk-lib constructs esbuild eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-import eslint jest jest-junit jsii jsii-diff jsii-docgen jsii-pacmak json-schema npm-check-updates standard-version ts-jest typescript aws-cdk-lib constructs"
         },
         {
           "exec": "npx projen"
+        },
+        {
+          "spawn": "post-upgrade"
         }
       ]
     },
@@ -301,6 +384,9 @@
         },
         {
           "exec": "npx projen"
+        },
+        {
+          "spawn": "post-upgrade"
         }
       ]
     },
