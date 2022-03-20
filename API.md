@@ -147,9 +147,9 @@ public sayHello(): string
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.credentialsHandler">credentialsHandler</a></code> | <code>aws-cdk-lib.aws_lambda.IFunction</code> | *No description.* |
-| <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.usernames">usernames</a></code> | <code>string[]</code> | *No description.* |
-| <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.schedule">schedule</a></code> | <code>aws-cdk-lib.Duration</code> | *No description.* |
+| <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.credentialsHandler">credentialsHandler</a></code> | <code>aws-cdk-lib.aws_lambda.IFunction</code> | Lambda function which is invoked after new credentials are created for a user. |
+| <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.usernames">usernames</a></code> | <code>string[]</code> | List of IAM usernames in target account. |
+| <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.scheduleDuration">scheduleDuration</a></code> | <code>aws-cdk-lib.Duration</code> | Frequency of key rotation. |
 
 ---
 
@@ -161,6 +161,8 @@ public readonly credentialsHandler: IFunction;
 
 - *Type:* aws-cdk-lib.aws_lambda.IFunction
 
+Lambda function which is invoked after new credentials are created for a user.
+
 ---
 
 ##### `usernames`<sup>Required</sup> <a name="usernames" id="cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.usernames"></a>
@@ -171,15 +173,21 @@ public readonly usernames: string[];
 
 - *Type:* string[]
 
+List of IAM usernames in target account.
+
 ---
 
-##### `schedule`<sup>Optional</sup> <a name="schedule" id="cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.schedule"></a>
+##### `scheduleDuration`<sup>Optional</sup> <a name="scheduleDuration" id="cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.scheduleDuration"></a>
 
 ```typescript
-public readonly schedule: Duration;
+public readonly scheduleDuration: Duration;
 ```
 
 - *Type:* aws-cdk-lib.Duration
+
+Frequency of key rotation.
+
+Default once an hour.
 
 ---
 
