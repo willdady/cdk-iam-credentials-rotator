@@ -80,8 +80,9 @@ export async function handler(event: Payload) {
       }),
     );
   } catch (err) {
-    if ((err as { name: string }).name !== 'ResourceNotFoundException')
+    if ((err as { name: string }).name !== 'ResourceNotFoundException') {
       throw err;
+    }
   }
 
   await secretsManagerClient.send(
