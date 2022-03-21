@@ -42,9 +42,24 @@ export async function handler(event: Payload) {
   accessKeysMetadata = accessKeysMetadata.filter(
     (x) => x.Status !== 'Inactive',
   );
-  // Fail if we have 2 active access keys
-  if (accessKeysMetadata.length === 2) {
-    throw new Error('Can not rotate credentials as user has 2 active keys');
+
+  // If we still have > 1 access keys, delete all access keys except the newest
+  if (accessKeysMetadata.length > 1) {
+    accessKeysMetadata = accessKeysMetadata.sort((a, b) => {
+      if (a.CreateDate! < b.CreateDate!) return -1;
+      if (a.CreateDate! > b.CreateDate!) return 1;
+      return 0;
+    });
+    for (let i = 1; i < accessKeysMetadata.length; i++) {
+      const obj = accessKeysMetadata[i];
+      await iamClient.send(
+        new DeleteAccessKeyCommand({
+          AccessKeyId: obj.AccessKeyId,
+          UserName: username,
+        }),
+      );
+      console.log(`Deleted active access key with id ${obj.AccessKeyId}`);
+    }
   }
 
   // Create new credentials
