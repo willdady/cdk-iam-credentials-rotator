@@ -23,7 +23,7 @@ new IamCredentialsRotator(this, 'MyCredentialsRotator', {
 
 You must provide a Lambda function which is called immediately after a new access key is created for a user. The newly created credentials must be retrieved from AWS Secrets Manager using the secret name passed in to the function. 
 
-Once you have the retrieved the credentials you are free to do with them as you with e.g. send them to a trusted 3rd party. Once your function exits the secret will be deleted from AWS Secrets Manager.
+Once you have the retrieved the credentials you are free to do with them as you wish e.g. send them to a trusted third party. Once your function exits the secret will be deleted from AWS Secrets Manager.
 
 Below is a minimal boilerplate for your handler function.
 
