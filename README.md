@@ -6,6 +6,8 @@ AWS CDK construct for rotating IAM user credentials.
 
 TODO
 
+![Architecture diagram](images/diagram.png)
+
 ## Usage
 
 ```typescript
@@ -28,5 +30,26 @@ Once you have the retrieved the credentials you are free to do with them as you 
 Below is a minimal boilerplate for your handler function.
 
 ```typescript
-// TODO
+import {
+  SecretsManagerClient,
+  GetSecretValueCommand,
+} from '@aws-sdk/client-secrets-manager';
+
+const secretsManagerClient = new SecretsManagerClient({});
+
+interface Event {
+  username: string;
+  secretName: string;
+}
+
+export async function handler(event: Event) {
+  const { username, secretName } = event;
+  const getSecretResponse = await secretsManagerClient.send(
+    new GetSecretValueCommand({ SecretId: secretName }),
+  );
+  const { AccessKeyId, SecretAccessKey }: { [key: string]: string } =
+    JSON.parse(getSecretResponse.SecretString || '');
+
+  // Do something with AccessKeyId and SecretAccessKey here e.g. send to a trusted third-party
+}
 ```
