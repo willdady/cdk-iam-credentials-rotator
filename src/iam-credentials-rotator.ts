@@ -22,7 +22,8 @@ export interface IIamCredentialsRotatorProps {
    */
   readonly usernames: string[];
   /**
-   * Frequency of key rotation. Default once an hour.
+   * Frequency of key rotation
+   * @default 1 hour
    */
   readonly scheduleDuration?: Duration;
 }

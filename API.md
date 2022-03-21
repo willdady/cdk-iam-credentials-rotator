@@ -151,10 +151,9 @@ public readonly scheduleDuration: Duration;
 ```
 
 - *Type:* aws-cdk-lib.Duration
+- *Default:* 1 hour
 
 Frequency of key rotation.
-
-Default once an hour.
 
 ---
 

@@ -1,14 +1,10 @@
 # IAM Credentials Rotator
 
-AWS CDK construct for rotating IAM user credentials.
-
-## How it works
-
-TODO
-
-![Architecture diagram](images/diagram.png)
+AWS CDK construct for rotating IAM user credentials and sending to a third party.
 
 ## Usage
+
+Simply provide a list of usernames of IAM users which exist in the target account and a Lambda function to handle the newly created credentials for a given user.
 
 ```typescript
 const credentialsHandler = new lambda.Function(this, 'MyCredentialsHandler', {
@@ -23,9 +19,9 @@ new IamCredentialsRotator(this, 'MyCredentialsRotator', {
 });
 ```
 
-You must provide a Lambda function which is called immediately after a new access key is created for a user. The newly created credentials must be retrieved from AWS Secrets Manager using the secret name passed in to the function. 
+The Lambda function, `credentialsHandler` is called immediately after a new access key is created for a user. The newly created credentials must be retrieved from AWS Secrets Manager using the secret name passed in to the function. 
 
-Once you have the retrieved the credentials you are free to do with them as you wish e.g. send them to a trusted third party. Once your function exits the secret will be deleted from AWS Secrets Manager.
+By default, credentials are rotated once an hour. This can be changed by providing `scheduleDuration` in the constructor.
 
 Below is a minimal boilerplate for your handler function.
 
@@ -53,3 +49,9 @@ export async function handler(event: Event) {
   // Do something with AccessKeyId and SecretAccessKey here e.g. send to a trusted third-party
 }
 ```
+
+Once your function exits the secret will be deleted from AWS Secrets Manager and old credentials for the user are also deleted at this step.
+
+## Architecture
+
+![Architecture diagram](images/diagram.png)
