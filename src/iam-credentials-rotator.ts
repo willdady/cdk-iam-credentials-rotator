@@ -41,6 +41,7 @@ export class IamCredentialsRotator extends Construct {
       this,
       'CredentialsRotatorLambda',
       {
+        description: 'Rotates access credentials for an IAM user',
         environment: {
           SECRET_NAME_PREFIX: id.toLowerCase(),
         },
@@ -98,7 +99,9 @@ export class IamCredentialsRotator extends Construct {
     );
 
     // Step 3
-    const cleanupLambda = new CleanupFunction(this, 'CleanupLambda');
+    const cleanupLambda = new CleanupFunction(this, 'CleanupLambda', {
+      description: 'Deletes old IAM credentials for a specific user',
+    });
     cleanupLambda.addToRolePolicy(
       new iam.PolicyStatement({
         actions: ['iam:ListAccessKeys', 'iam:DeleteAccessKey'],
@@ -143,6 +146,7 @@ export class IamCredentialsRotator extends Construct {
       this,
       'EventHandlerLambda',
       {
+        description: 'Initiates IAM credential rotation for a list of users',
         environment: {
           STATE_MACHINE_ARN: stateMachine.stateMachineArn,
           USERNAMES_PARAMETER_NAME: usernamesParameter.parameterName,
