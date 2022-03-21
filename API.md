@@ -102,39 +102,6 @@ The tree node.
 
 
 
-## Classes <a name="Classes" id="Classes"></a>
-
-### Hello <a name="Hello" id="cdk-iam-credentials-rotator.Hello"></a>
-
-#### Initializers <a name="Initializers" id="cdk-iam-credentials-rotator.Hello.Initializer"></a>
-
-```typescript
-import { Hello } from 'cdk-iam-credentials-rotator'
-
-new Hello()
-```
-
-| **Name** | **Type** | **Description** |
-| --- | --- | --- |
-
----
-
-#### Methods <a name="Methods" id="Methods"></a>
-
-| **Name** | **Description** |
-| --- | --- |
-| <code><a href="#cdk-iam-credentials-rotator.Hello.sayHello">sayHello</a></code> | *No description.* |
-
----
-
-##### `sayHello` <a name="sayHello" id="cdk-iam-credentials-rotator.Hello.sayHello"></a>
-
-```typescript
-public sayHello(): string
-```
-
-
-
 
 ## Protocols <a name="Protocols" id="Protocols"></a>
 
