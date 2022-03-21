@@ -48,12 +48,16 @@ export class IamCredentialsRotator extends Construct {
     );
     credentialsRotatorLambda.addToRolePolicy(
       new iam.PolicyStatement({
-        actions: [
-          'iam:ListAccessKeys',
-          'iam:CreateAccessKey',
-          'iam:DeleteAccessKey',
-        ],
+        actions: ['iam:ListAccessKeys'],
         resources: ['*'],
+      }),
+    );
+    credentialsRotatorLambda.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['iam:CreateAccessKey', 'iam:DeleteAccessKey'],
+        resources: props.usernames.map(
+          (username) => `arn:*:iam::*:user/${username}`,
+        ),
       }),
     );
     credentialsRotatorLambda.addToRolePolicy(
