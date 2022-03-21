@@ -76,6 +76,7 @@ export class IamCredentialsRotator extends Construct {
       {
         lambdaFunction: props.credentialsHandler,
         resultPath: sfn.JsonPath.DISCARD,
+        inputPath: '$.Payload',
       },
     );
 
@@ -101,6 +102,7 @@ export class IamCredentialsRotator extends Construct {
       'CleanupLambdaTask',
       {
         lambdaFunction: cleanupLambda,
+        inputPath: '$.Payload',
       },
     );
 
