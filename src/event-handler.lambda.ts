@@ -11,7 +11,7 @@ export async function handler() {
     new GetParameterCommand({ Name: USERNAMES_PARAMETER_NAME }),
   );
   const usernames = (getParameterResponse.Parameter?.Value || '').split(',');
-  console.log(`Got ${usernames.length} from parameter store`);
+  console.log(`Got ${usernames.length} users from parameter store`);
 
   for (const username of usernames) {
     const startExecutionResponse = await sfnClient.send(
