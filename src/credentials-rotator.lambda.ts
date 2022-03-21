@@ -46,8 +46,8 @@ export async function handler(event: Payload) {
   // If we still have > 1 access keys, delete all access keys except the newest
   if (accessKeysMetadata.length > 1) {
     accessKeysMetadata = accessKeysMetadata.sort((a, b) => {
-      if (a.CreateDate! < b.CreateDate!) return -1;
-      if (a.CreateDate! > b.CreateDate!) return 1;
+      if (a.CreateDate! < b.CreateDate!) return 1;
+      if (a.CreateDate! > b.CreateDate!) return -1;
       return 0;
     });
     for (let i = 1; i < accessKeysMetadata.length; i++) {
