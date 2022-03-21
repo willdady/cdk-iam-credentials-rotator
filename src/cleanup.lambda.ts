@@ -42,7 +42,10 @@ export async function handler(event: Payload) {
     for (let i = 1; i < accessKeysMetadata.length; i++) {
       const obj = accessKeysMetadata[i];
       await iamClient.send(
-        new DeleteAccessKeyCommand({ AccessKeyId: obj.AccessKeyId }),
+        new DeleteAccessKeyCommand({
+          AccessKeyId: obj.AccessKeyId,
+          UserName: username,
+        }),
       );
       console.log(`Deleted access key with id ${obj.AccessKeyId}`);
     }
