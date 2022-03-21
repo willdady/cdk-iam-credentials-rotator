@@ -59,7 +59,7 @@ export class IamCredentialsRotator extends Construct {
 
     const credentialsRotatorLambdaTask = new tasks.LambdaInvoke(
       this,
-      'CredentialsRotatorLambdaTask',
+      'RotateCredentials',
       {
         lambdaFunction: credentialsRotatorLambda,
       },
@@ -77,7 +77,7 @@ export class IamCredentialsRotator extends Construct {
 
     const credentialsHandlerLambdaTask = new tasks.LambdaInvoke(
       this,
-      'CredentialsHandlerLambdaTask',
+      'HandleCredentials',
       {
         lambdaFunction: props.credentialsHandler,
         resultPath: sfn.JsonPath.DISCARD,
@@ -102,14 +102,10 @@ export class IamCredentialsRotator extends Construct {
       }),
     );
 
-    const cleanupLambdaTask = new tasks.LambdaInvoke(
-      this,
-      'CleanupLambdaTask',
-      {
-        lambdaFunction: cleanupLambda,
-        inputPath: '$.Payload',
-      },
-    );
+    const cleanupLambdaTask = new tasks.LambdaInvoke(this, 'CleanUp', {
+      lambdaFunction: cleanupLambda,
+      inputPath: '$.Payload',
+    });
 
     const definition = credentialsRotatorLambdaTask.next(
       credentialsHandlerLambdaTask.next(cleanupLambdaTask),
