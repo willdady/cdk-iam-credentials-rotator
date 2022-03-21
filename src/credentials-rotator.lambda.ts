@@ -9,6 +9,8 @@ import {
   SecretsManagerClient,
 } from '@aws-sdk/client-secrets-manager';
 
+const { SECRET_NAME_PREFIX } = process.env;
+
 const iamClient = new IAMClient({});
 const secretsManagerClient = new SecretsManagerClient({});
 
@@ -51,7 +53,7 @@ export async function handler(event: Payload) {
   );
 
   // Store credentials in AWS Secrets Manager
-  const secretName = `iam-credential-rotation/${username}-iam-credentials`;
+  const secretName = `iam-credential-rotation/${SECRET_NAME_PREFIX}-${username}-iam-credentials`;
   await secretsManagerClient.send(
     new CreateSecretCommand({
       Name: secretName,

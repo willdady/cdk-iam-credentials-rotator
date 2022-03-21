@@ -39,6 +39,11 @@ export class IamCredentialsRotator extends Construct {
     const credentialsRotatorLambda = new CredentialsRotatorFunction(
       this,
       'CredentialsRotatorLambda',
+      {
+        environment: {
+          SECRET_NAME_PREFIX: id.toLowerCase(),
+        },
+      },
     );
     credentialsRotatorLambda.addToRolePolicy(
       new iam.PolicyStatement({
