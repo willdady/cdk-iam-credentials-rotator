@@ -51,9 +51,16 @@ export class IamCredentialsRotator extends Construct {
           'iam:ListAccessKeys',
           'iam:CreateAccessKey',
           'iam:DeleteAccessKey',
-          'secretsmanager:CreateSecret',
         ],
         resources: ['*'],
+      }),
+    );
+    credentialsRotatorLambda.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['secretsmanager:CreateSecret', 'secretsmanager:DeleteSecret'],
+        resources: [
+          'arn:*:secretsmanager:*:*:secret:iam-credential-rotation/*',
+        ],
       }),
     );
 

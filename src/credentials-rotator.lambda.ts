@@ -6,6 +6,7 @@ import {
 } from '@aws-sdk/client-iam';
 import {
   CreateSecretCommand,
+  DeleteSecretCommand,
   SecretsManagerClient,
 } from '@aws-sdk/client-secrets-manager';
 
@@ -69,6 +70,20 @@ export async function handler(event: Payload) {
 
   // Store credentials in AWS Secrets Manager
   const secretName = `iam-credential-rotation/${SECRET_NAME_PREFIX}-${username}-iam-credentials`;
+
+  try {
+    // Secret might already exist. Try delete it but ignore the error if it doesn't exist.
+    await secretsManagerClient.send(
+      new DeleteSecretCommand({
+        SecretId: secretName,
+        ForceDeleteWithoutRecovery: true,
+      }),
+    );
+  } catch (err) {
+    if ((err as { name: string }).name !== 'ResourceNotFoundException')
+      throw err;
+  }
+
   await secretsManagerClient.send(
     new CreateSecretCommand({
       Name: secretName,
