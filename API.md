@@ -116,6 +116,7 @@ The tree node.
 | --- | --- | --- |
 | <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.credentialsHandler">credentialsHandler</a></code> | <code>aws-cdk-lib.aws_lambda.IFunction</code> | Lambda function which is invoked after new credentials are created for a user. |
 | <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.usernames">usernames</a></code> | <code>string[]</code> | List of IAM usernames in target account. |
+| <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.cleanupWaitDuration">cleanupWaitDuration</a></code> | <code>aws-cdk-lib.Duration</code> | The amount of time to wait before deleting old credentials. |
 | <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.scheduleDuration">scheduleDuration</a></code> | <code>aws-cdk-lib.Duration</code> | Frequency of key rotation. |
 
 ---
@@ -141,6 +142,21 @@ public readonly usernames: string[];
 - *Type:* string[]
 
 List of IAM usernames in target account.
+
+---
+
+##### `cleanupWaitDuration`<sup>Optional</sup> <a name="cleanupWaitDuration" id="cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.cleanupWaitDuration"></a>
+
+```typescript
+public readonly cleanupWaitDuration: Duration;
+```
+
+- *Type:* aws-cdk-lib.Duration
+- *Default:* 5 minutes
+
+The amount of time to wait before deleting old credentials.
+
+This value MUST be significantly less-than `scheduleDuration`.
 
 ---
 

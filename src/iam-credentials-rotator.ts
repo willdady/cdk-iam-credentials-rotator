@@ -26,6 +26,13 @@ export interface IIamCredentialsRotatorProps {
    * @default 1 hour
    */
   readonly scheduleDuration?: Duration;
+  /**
+   * The amount of time to wait before deleting old credentials.
+   *
+   * This value MUST be significantly less-than `scheduleDuration`.
+   * @default 5 minutes
+   */
+  readonly cleanupWaitDuration?: Duration;
 }
 
 export class IamCredentialsRotator extends Construct {
@@ -122,8 +129,16 @@ export class IamCredentialsRotator extends Construct {
       inputPath: '$.Payload',
     });
 
+    const waitBeforeCleanup = new sfn.Wait(this, 'Wait', {
+      time: sfn.WaitTime.duration(
+        props.cleanupWaitDuration || Duration.minutes(5),
+      ),
+    });
+
     const definition = credentialsRotatorLambdaTask.next(
-      credentialsHandlerLambdaTask.next(cleanupLambdaTask),
+      credentialsHandlerLambdaTask.next(
+        waitBeforeCleanup.next(cleanupLambdaTask),
+      ),
     );
 
     const stateMachine = new sfn.StateMachine(
