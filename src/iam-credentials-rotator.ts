@@ -52,6 +52,7 @@ export class IamCredentialsRotator extends Construct {
         environment: {
           SECRET_NAME_PREFIX: id.toLowerCase(),
         },
+        timeout: Duration.seconds(30),
       },
     );
     credentialsRotatorLambda.addToRolePolicy(
@@ -108,6 +109,7 @@ export class IamCredentialsRotator extends Construct {
     // Step 3
     const cleanupLambda = new CleanupFunction(this, 'CleanupLambda', {
       description: 'Deletes old IAM credentials for a specific user',
+      timeout: Duration.seconds(30),
     });
     cleanupLambda.addToRolePolicy(
       new iam.PolicyStatement({
@@ -166,6 +168,7 @@ export class IamCredentialsRotator extends Construct {
           STATE_MACHINE_ARN: stateMachine.stateMachineArn,
           USERNAMES_PARAMETER_NAME: usernamesParameter.parameterName,
         },
+        timeout: Duration.seconds(30),
       },
     );
     stateMachine.grantStartExecution(eventHandlerFunction);
