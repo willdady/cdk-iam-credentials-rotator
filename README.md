@@ -4,7 +4,7 @@ AWS CDK construct for rotating IAM user credentials and sending to a third party
 
 ## Usage
 
-Simply provide a list of usernames of IAM users which exist in the target account and a Lambda function to handle the newly created credentials for a given user.
+Simply provide a list of username objects where each object contains a `username` of an IAM user which exists in the target account.
 
 ```typescript
 const myCredentialsHandler = new lambda.Function(this, 'MyCredentialsHandler', {
@@ -14,12 +14,20 @@ const myCredentialsHandler = new lambda.Function(this, 'MyCredentialsHandler', {
 });
 
 new IamCredentialsRotator(this, 'MyCredentialsRotator', {
-  usernames: ['homer', 'marge', 'bart', 'lisa', 'maggie'],
+  usernames: [
+    { username: 'homer' }, 
+    { username: 'marge' }, 
+    { username: 'bart' }, 
+    { username: 'lisa' }, 
+    { username: 'maggie' }
+  ],
   credentialsHandler: myCredentialsHandler,
 });
 ```
 
-The Lambda function, `credentialsHandler`, is called immediately after a new access key is created for a user. The newly created credentials must be retrieved from AWS Secrets Manager using the secret name passed in to the function. 
+Each username object supports an optional `metadata` key which can contain arbitrary string data. Do not store large or sensitive values in `metadata`. The `usernames` array is stored in a single AWS Parameter Store parameter which has a maximum size limit of 4KB.
+
+The Lambda function, `credentialsHandler`, is called immediately after a new access key is created for a user. The newly created credentials must be retrieved from AWS Secrets Manager using `secretName` included in the function's event. 
 
 By default, credentials are rotated once an hour. This can be changed by providing `scheduleDuration` in the constructor.
 
@@ -36,6 +44,7 @@ const secretsManagerClient = new SecretsManagerClient({});
 interface Event {
   username: string;
   secretName: string;
+  metadata?: string;
 }
 
 export async function handler(event: Event) {

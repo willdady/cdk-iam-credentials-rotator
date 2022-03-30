@@ -12,6 +12,14 @@ import { CleanupFunction } from './cleanup-function';
 import { CredentialsRotatorFunction } from './credentials-rotator-function';
 import { EventHandlerFunction } from './event-handler-function';
 
+export interface IUsername {
+  /** Username of an IAM user in the target account */
+  readonly username: string;
+
+  /** Optional metadata */
+  readonly metadata?: string;
+}
+
 export interface IIamCredentialsRotatorProps {
   /**
    * Lambda function which is invoked after new credentials are created for a user
@@ -20,7 +28,7 @@ export interface IIamCredentialsRotatorProps {
   /**
    * List of IAM usernames in target account
    */
-  readonly usernames: string[];
+  readonly usernames: IUsername[];
   /**
    * Frequency of key rotation
    * @default 1 hour
@@ -151,11 +159,16 @@ export class IamCredentialsRotator extends Construct {
       },
     );
 
-    const usernamesParameter = new ssm.StringListParameter(
+    const usernamesParameter = new ssm.StringParameter(
       this,
-      'UsernamesStringListParameter',
+      'UsernamesStringParameter',
       {
-        stringListValue: props.usernames,
+        stringValue: JSON.stringify({
+          usernames: props.usernames.map(({ username, metadata }) => ({
+            u: username,
+            m: metadata,
+          })),
+        }),
       },
     );
 
