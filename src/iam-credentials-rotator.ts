@@ -73,7 +73,7 @@ export class IamCredentialsRotator extends Construct {
       new iam.PolicyStatement({
         actions: ['iam:CreateAccessKey', 'iam:DeleteAccessKey'],
         resources: props.usernames.map(
-          (username) => `arn:*:iam::*:user/${username}`,
+          (userObj) => `arn:*:iam::*:user/${userObj.username}`,
         ),
       }),
     );
