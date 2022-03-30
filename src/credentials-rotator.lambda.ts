@@ -17,10 +17,11 @@ const secretsManagerClient = new SecretsManagerClient({});
 
 interface Payload {
   username: string;
+  metadata?: string;
 }
 
 export async function handler(event: Payload) {
-  const { username } = event;
+  const { username, metadata } = event;
 
   console.log(`Getting existing access keys for user ${username}`);
   const listAccessKeysResponse = await iamClient.send(
@@ -95,5 +96,5 @@ export async function handler(event: Payload) {
     `New credentials created and stored in AWS Secrets Manager with name '${secretName}'`,
   );
 
-  return { username, secretName };
+  return { username, metadata, secretName };
 }
