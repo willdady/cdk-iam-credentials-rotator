@@ -12,7 +12,7 @@ import { CleanupFunction } from './cleanup-function';
 import { CredentialsRotatorFunction } from './credentials-rotator-function';
 import { EventHandlerFunction } from './event-handler-function';
 
-export interface IUsername {
+export interface IUser {
   /** Username of an IAM user in the target account */
   readonly username: string;
 
@@ -26,9 +26,9 @@ export interface IIamCredentialsRotatorProps {
    */
   readonly credentialsHandler: IFunction;
   /**
-   * List of IAM usernames in target account
+   * List of users to rotate credentials for in the target account
    */
-  readonly usernames: IUsername[];
+  readonly users: IUser[];
   /**
    * Frequency of key rotation
    * @default 1 hour
@@ -72,7 +72,7 @@ export class IamCredentialsRotator extends Construct {
     credentialsRotatorLambda.addToRolePolicy(
       new iam.PolicyStatement({
         actions: ['iam:CreateAccessKey', 'iam:DeleteAccessKey'],
-        resources: props.usernames.map(
+        resources: props.users.map(
           (userObj) => `arn:*:iam::*:user/${userObj.username}`,
         ),
       }),
@@ -159,12 +159,12 @@ export class IamCredentialsRotator extends Construct {
       },
     );
 
-    const usernamesParameter = new ssm.StringParameter(
+    const usersParameter = new ssm.StringParameter(
       this,
-      'UsernamesStringParameter',
+      'UsersStringParameter',
       {
         stringValue: JSON.stringify({
-          usernames: props.usernames.map(({ username, metadata }) => ({
+          users: props.users.map(({ username, metadata }) => ({
             u: username,
             m: metadata,
           })),
@@ -179,13 +179,13 @@ export class IamCredentialsRotator extends Construct {
         description: 'Initiates IAM credential rotation for a list of users',
         environment: {
           STATE_MACHINE_ARN: stateMachine.stateMachineArn,
-          USERNAMES_PARAMETER_NAME: usernamesParameter.parameterName,
+          USERS_PARAMETER_NAME: usersParameter.parameterName,
         },
         timeout: Duration.seconds(30),
       },
     );
     stateMachine.grantStartExecution(eventHandlerFunction);
-    usernamesParameter.grantRead(eventHandlerFunction);
+    usersParameter.grantRead(eventHandlerFunction);
 
     new events.Rule(this, 'ScheduleRule', {
       schedule: events.Schedule.rate(

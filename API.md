@@ -115,7 +115,7 @@ The tree node.
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.credentialsHandler">credentialsHandler</a></code> | <code>aws-cdk-lib.aws_lambda.IFunction</code> | Lambda function which is invoked after new credentials are created for a user. |
-| <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.usernames">usernames</a></code> | <code><a href="#cdk-iam-credentials-rotator.IUsername">IUsername</a>[]</code> | List of IAM usernames in target account. |
+| <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.users">users</a></code> | <code><a href="#cdk-iam-credentials-rotator.IUser">IUser</a>[]</code> | List of users to rotate credentials for in the target account. |
 | <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.cleanupWaitDuration">cleanupWaitDuration</a></code> | <code>aws-cdk-lib.Duration</code> | The amount of time to wait before deleting old credentials. |
 | <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.scheduleDuration">scheduleDuration</a></code> | <code>aws-cdk-lib.Duration</code> | Frequency of key rotation. |
 
@@ -133,15 +133,15 @@ Lambda function which is invoked after new credentials are created for a user.
 
 ---
 
-##### `usernames`<sup>Required</sup> <a name="usernames" id="cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.usernames"></a>
+##### `users`<sup>Required</sup> <a name="users" id="cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.users"></a>
 
 ```typescript
-public readonly usernames: IUsername[];
+public readonly users: IUser[];
 ```
 
-- *Type:* <a href="#cdk-iam-credentials-rotator.IUsername">IUsername</a>[]
+- *Type:* <a href="#cdk-iam-credentials-rotator.IUser">IUser</a>[]
 
-List of IAM usernames in target account.
+List of users to rotate credentials for in the target account.
 
 ---
 
@@ -173,21 +173,21 @@ Frequency of key rotation.
 
 ---
 
-### IUsername <a name="IUsername" id="cdk-iam-credentials-rotator.IUsername"></a>
+### IUser <a name="IUser" id="cdk-iam-credentials-rotator.IUser"></a>
 
-- *Implemented By:* <a href="#cdk-iam-credentials-rotator.IUsername">IUsername</a>
+- *Implemented By:* <a href="#cdk-iam-credentials-rotator.IUser">IUser</a>
 
 
 #### Properties <a name="Properties" id="Properties"></a>
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#cdk-iam-credentials-rotator.IUsername.property.username">username</a></code> | <code>string</code> | Username of an IAM user in the target account. |
-| <code><a href="#cdk-iam-credentials-rotator.IUsername.property.metadata">metadata</a></code> | <code>string</code> | Optional metadata. |
+| <code><a href="#cdk-iam-credentials-rotator.IUser.property.username">username</a></code> | <code>string</code> | Username of an IAM user in the target account. |
+| <code><a href="#cdk-iam-credentials-rotator.IUser.property.metadata">metadata</a></code> | <code>string</code> | Optional metadata. |
 
 ---
 
-##### `username`<sup>Required</sup> <a name="username" id="cdk-iam-credentials-rotator.IUsername.property.username"></a>
+##### `username`<sup>Required</sup> <a name="username" id="cdk-iam-credentials-rotator.IUser.property.username"></a>
 
 ```typescript
 public readonly username: string;
@@ -199,7 +199,7 @@ Username of an IAM user in the target account.
 
 ---
 
-##### `metadata`<sup>Optional</sup> <a name="metadata" id="cdk-iam-credentials-rotator.IUsername.property.metadata"></a>
+##### `metadata`<sup>Optional</sup> <a name="metadata" id="cdk-iam-credentials-rotator.IUser.property.metadata"></a>
 
 ```typescript
 public readonly metadata: string;

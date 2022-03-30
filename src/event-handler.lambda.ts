@@ -1,12 +1,12 @@
 import { SFNClient, StartExecutionCommand } from '@aws-sdk/client-sfn';
 import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
 
-const { STATE_MACHINE_ARN, USERNAMES_PARAMETER_NAME } = process.env;
+const { STATE_MACHINE_ARN, USERS_PARAMETER_NAME } = process.env;
 
 const ssmClient = new SSMClient({});
 const sfnClient = new SFNClient({});
 
-interface IUsername {
+interface IUser {
   /** Username of an IAM user in the target account */
   u: string;
 
@@ -16,25 +16,25 @@ interface IUsername {
 
 export async function handler() {
   const getParameterResponse = await ssmClient.send(
-    new GetParameterCommand({ Name: USERNAMES_PARAMETER_NAME }),
+    new GetParameterCommand({ Name: USERS_PARAMETER_NAME }),
   );
-  const data: { usernames: IUsername[] } = JSON.parse(
+  const data: { users: IUser[] } = JSON.parse(
     getParameterResponse.Parameter?.Value || '',
   );
-  console.log(`Got ${data.usernames.length} users from parameter store`);
+  console.log(`Got ${data.users.length} users from parameter store`);
 
-  for (const usernameObj of data.usernames) {
+  for (const userObj of data.users) {
     const startExecutionResponse = await sfnClient.send(
       new StartExecutionCommand({
         stateMachineArn: STATE_MACHINE_ARN,
         input: JSON.stringify({
-          username: usernameObj.u,
-          metadata: usernameObj.m,
+          username: userObj.u,
+          metadata: userObj.m,
         }),
       }),
     );
     console.log(
-      `Started execution for user ${usernameObj.u} - ${startExecutionResponse.executionArn}`,
+      `Started execution for user ${userObj.u} - ${startExecutionResponse.executionArn}`,
     );
   }
 }

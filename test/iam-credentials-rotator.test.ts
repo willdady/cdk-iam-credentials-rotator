@@ -13,7 +13,7 @@ test('synthesises as we expect', () => {
     runtime: lambda.Runtime.NODEJS_14_X,
   });
 
-  const usernames = [
+  const users = [
     { username: 'homer' },
     { username: 'marge' },
     { username: 'bart' },
@@ -22,7 +22,7 @@ test('synthesises as we expect', () => {
   ];
 
   new IamCredentialsRotator(testStack, 'CredentialsRotator', {
-    usernames,
+    users,
     credentialsHandler: mockFunction,
   });
 
