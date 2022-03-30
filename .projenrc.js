@@ -10,6 +10,6 @@ const project = new awscdk.AwsCdkConstructLibrary({
   devDeps: ['@aws-sdk/client-iam', '@aws-sdk/client-secrets-manager', '@aws-sdk/client-sfn', '@aws-sdk/client-ssm'],
   packageName: 'cdk-iam-credentials-rotator',
   keywords: ['iam', 'serverless', 'credentials'],
-  majorVersion: 2,
+  majorVersion: 1,
 });
 project.synth();

@@ -13,7 +13,13 @@ test('synthesises as we expect', () => {
     runtime: lambda.Runtime.NODEJS_14_X,
   });
 
-  const usernames = ['homer', 'marge', 'bart', 'lisa', 'maggie'];
+  const usernames = [
+    { username: 'homer' },
+    { username: 'marge' },
+    { username: 'bart' },
+    { username: 'lisa' },
+    { username: 'maggie' },
+  ];
 
   new IamCredentialsRotator(testStack, 'CredentialsRotator', {
     usernames,
@@ -24,7 +30,4 @@ test('synthesises as we expect', () => {
 
   template.resourceCountIs('AWS::Lambda::Function', 4);
   template.resourceCountIs('AWS::SSM::Parameter', 1);
-  template.hasResourceProperties('AWS::SSM::Parameter', {
-    Value: usernames.join(','),
-  });
 });

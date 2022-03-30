@@ -115,7 +115,7 @@ The tree node.
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.credentialsHandler">credentialsHandler</a></code> | <code>aws-cdk-lib.aws_lambda.IFunction</code> | Lambda function which is invoked after new credentials are created for a user. |
-| <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.usernames">usernames</a></code> | <code>string[]</code> | List of IAM usernames in target account. |
+| <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.usernames">usernames</a></code> | <code><a href="#cdk-iam-credentials-rotator.IUsername">IUsername</a>[]</code> | List of IAM usernames in target account. |
 | <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.cleanupWaitDuration">cleanupWaitDuration</a></code> | <code>aws-cdk-lib.Duration</code> | The amount of time to wait before deleting old credentials. |
 | <code><a href="#cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.scheduleDuration">scheduleDuration</a></code> | <code>aws-cdk-lib.Duration</code> | Frequency of key rotation. |
 
@@ -136,10 +136,10 @@ Lambda function which is invoked after new credentials are created for a user.
 ##### `usernames`<sup>Required</sup> <a name="usernames" id="cdk-iam-credentials-rotator.IIamCredentialsRotatorProps.property.usernames"></a>
 
 ```typescript
-public readonly usernames: string[];
+public readonly usernames: IUsername[];
 ```
 
-- *Type:* string[]
+- *Type:* <a href="#cdk-iam-credentials-rotator.IUsername">IUsername</a>[]
 
 List of IAM usernames in target account.
 
@@ -170,6 +170,44 @@ public readonly scheduleDuration: Duration;
 - *Default:* 1 hour
 
 Frequency of key rotation.
+
+---
+
+### IUsername <a name="IUsername" id="cdk-iam-credentials-rotator.IUsername"></a>
+
+- *Implemented By:* <a href="#cdk-iam-credentials-rotator.IUsername">IUsername</a>
+
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-iam-credentials-rotator.IUsername.property.username">username</a></code> | <code>string</code> | Username of an IAM user in the target account. |
+| <code><a href="#cdk-iam-credentials-rotator.IUsername.property.metadata">metadata</a></code> | <code>string</code> | Optional metadata. |
+
+---
+
+##### `username`<sup>Required</sup> <a name="username" id="cdk-iam-credentials-rotator.IUsername.property.username"></a>
+
+```typescript
+public readonly username: string;
+```
+
+- *Type:* string
+
+Username of an IAM user in the target account.
+
+---
+
+##### `metadata`<sup>Optional</sup> <a name="metadata" id="cdk-iam-credentials-rotator.IUsername.property.metadata"></a>
+
+```typescript
+public readonly metadata: string;
+```
+
+- *Type:* string
+
+Optional metadata.
 
 ---
 
